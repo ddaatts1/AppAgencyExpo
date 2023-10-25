@@ -1,0 +1,188 @@
+
+import React, { useRef, useState } from 'react';
+import { Image } from 'react-native';
+import { Text } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { TextInput } from 'react-native';
+import { View } from 'react-native';
+import { Dropdown } from 'react-native-element-dropdown';
+import { STYLES, SVG } from '../../constants';
+
+
+const DropdownCard = (props: any) => {
+
+    const {
+        field: { name, onBlur, onChange, value },
+        form: { errors, touched, setFieldTouched },
+        ...inputProps
+    } = props;
+    const hasError = errors[name] && touched[name];
+    const title = props.title;
+    const dataAll = props.data;
+    const titleSelect = props.titleSelect;
+    const isValid = props.isValid;
+    const labelField = props.labelField;
+    const valueField = props.valueField;
+    const [search, setSearch] = useState('');
+    const [dropdown, setDropdown] = useState<any>(1);
+    const [data, setData] = useState(dataAll);
+    const [isIcon, setIsIcon] = useState(false);
+    const customStyle = props.customStyle
+    const onSearch = (search: any) => {
+        if (search !== '') {
+            let tempData = dataAll.filter((item: any) => {
+                return item.label.toLowerCase().indexOf(search.toLowerCase()) > -1;
+            });
+            setData(tempData);
+        } else {
+            setData(data);
+        }
+    };
+
+    const handleChange = (item: any) => {
+        console.log(item);
+        onChange(name)(item.value)
+        setDropdown(item.value);
+        if (props.setSelectedItem) {
+            props.setSelectedItem(item);
+        }
+    };
+
+    const _renderItem = (item: any) => {
+        return (
+            <View style={styles.item}>
+                <Text style={styles.textItem}>{item.label}</Text>
+            </View>
+        );
+    };
+
+    return (
+        <View style={{ paddingTop: 12, }}>
+
+            <Text style={STYLES.text_16.text}>
+                {title}
+                {!isValid ? (
+                    <Text />
+                ) : (
+                    <Text style={STYLES.text_16.text_color}>*</Text>
+                )}
+            </Text>
+            <Dropdown
+                renderInputSearch={() => (
+                    <View >
+                        <View
+                            style={{
+                                paddingTop: 12,
+                                paddingBottom: 12,
+                                alignItems: 'center', justifyContent: 'center',
+                                borderBottomWidth: 0.5,
+                                borderColor: '#0288D1',
+                            }}>
+                            <Text style={{
+                                color: "#0288D1", fontWeight: 'bold', fontSize: 16,
+
+                            }}>{titleSelect}</Text>
+
+                        </View>
+                    </View>
+                )}
+
+
+                style={customStyle||styles.dropdown}
+                containerStyle={styles.shadow}
+                data={data}
+                placeholder=''
+                search
+                labelField={labelField}
+                valueField={valueField}
+                value={dropdown}
+                onChange={handleChange}
+                selectedTextStyle={styles.selectedTextStyle}
+                renderRightIcon={() => (
+                    <SVG.Icon_down height={25} width={25} />
+                )}
+
+                renderItem={item => _renderItem(item)}
+
+            />
+            <View style={STYLES.style_input.viewErrorText}>
+                {hasError && (
+
+                    <Text style={STYLES.style_input.errorText}>
+                        <SVG.Icon_group /> {errors[name]}
+                    </Text>
+                )}
+            </View>
+        </View>
+    );
+};
+export default DropdownCard;
+
+const styles = StyleSheet.create({
+    textInput: {
+        borderColor: '#0288D1',
+        width: '100%',
+        height: 45,
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderRadius: 10,
+    },
+    text: {
+        fontSize: 16,
+        color: '#0288D1',
+        fontWeight: '500',
+    },
+
+    dropdown: {
+
+
+        width: '100%',
+        height: 45,
+        backgroundColor: '#EEFAFF',
+
+        borderRadius: 10,
+        paddingLeft: 12,
+        paddingRight: 12,
+    },
+    icon: {
+        marginRight: 5,
+        width: 18,
+        height: 18,
+    },
+    item: {
+        borderBottomWidth: 0.5,
+        borderColor: '#EEEEEE',
+        paddingVertical: 17,
+        paddingHorizontal: 4,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    textItem: {
+        paddingLeft: 12,
+        flex: 1,
+        fontSize: 16,
+        color: '#323232'
+    },
+    shadow: {
+
+        elevation: 5,
+        height: 300,
+        alignSelf: 'center',
+        width: '100%',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 1.41,
+
+    },
+    selectedTextStyle: {
+        fontSize: 16,
+        color: '#323232',
+    },
+});

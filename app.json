@@ -1,0 +1,11 @@
+{
+  "name": "Agency",
+  "displayName": "Agency",
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "6f96daa2-c51c-482f-84ff-951864f42b4d"
+      }
+    }
+  }
+}
